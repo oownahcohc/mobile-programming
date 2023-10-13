@@ -195,19 +195,19 @@ class Screen {
     }
 
     public static Screen createGameScreen() throws MatrixException {
-        int[][] arrayScreen = createArrayScreen(SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_BORDER_WIDTH);
+        int[][] arrayScreen = createArrayScreen();
         return new Screen(new Matrix(arrayScreen));
     }
 
-    private static int[][] createArrayScreen(int dy, int dx, int dw) {
-        int[][] array = new int[dy + dw][dx + 2 * dw];
+    private static int[][] createArrayScreen() {
+        int[][] array = new int[SCREEN_HEIGHT + SCREEN_BORDER_WIDTH][SCREEN_WIDTH + 2 * SCREEN_BORDER_WIDTH];
         for (int y = 0; y < array.length; y++)
-            for (int x = 0; x < dw; x++)
+            for (int x = 0; x < SCREEN_BORDER_WIDTH; x++)
                 array[y][x] = 1;
         for (int y = 0; y < array.length; y++)
-            for (int x = dw + dx; x < array[0].length; x++)
+            for (int x = SCREEN_BORDER_WIDTH + SCREEN_WIDTH; x < array[0].length; x++)
                 array[y][x] = 1;
-        for (int y = dy; y < array.length; y++)
+        for (int y = SCREEN_HEIGHT; y < array.length; y++)
             for (int x = 0; x < array[0].length; x++)
                 array[y][x] = 1;
         return array;
