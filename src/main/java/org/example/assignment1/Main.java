@@ -83,24 +83,17 @@ class TetrisGame {
 
     public void manipulateBlockOnScreenByKey(char key) throws MatrixException {
         switch (key) {
-            case LEFT_KEY:
-                gameScreen.moveLeft();
-                break;
-            case RIGHT_KEY:
-                gameScreen.moveRight();
-                break;
-            case DOWN_KEY:
-                gameScreen.moveDown();
-                break;
-            case ROTATE_KEY:
+            case LEFT_KEY -> gameScreen.moveLeft();
+            case RIGHT_KEY -> gameScreen.moveRight();
+            case DOWN_KEY -> gameScreen.moveDown();
+            case ROTATE_KEY -> {
                 clockwiseRotateDegree = (clockwiseRotateDegree + 1) % 4;
                 Tetrimino currentTetrimino = currentBlock.getTetrimino();
                 Matrix rotateTetrimino = BLOCK.getBlockByTypeAndRotateNumber(currentTetrimino, clockwiseRotateDegree);
                 currentBlock = new TetrisBlock(currentTetrimino, rotateTetrimino);
-                break;
-            case DROP_KEY:
-                currentBlockOnScreen = gameScreen.dropDown(currentBlockOnScreen.getMatrix(), currentBlock.getBlockMatrix());
-                break;
+            }
+            case DROP_KEY ->
+                    currentBlockOnScreen = gameScreen.dropDown(currentBlockOnScreen.getMatrix(), currentBlock.getBlockMatrix());
         }
         currentBlockOnScreen = gameScreen.getScreenAfterAddCurrentBlock(currentBlock.getBlockMatrix());
     }
@@ -108,21 +101,15 @@ class TetrisGame {
     public void handleWallCollision(char key) throws MatrixException {
         if (currentBlockOnScreen.isWallCollision()) {
             switch (key) {
-                case LEFT_KEY:
-                    gameScreen.moveRight();
-                    break;
-                case RIGHT_KEY:
-                    gameScreen.moveLeft();
-                    break;
-                case DOWN_KEY, DROP_KEY:
-                    gameScreen.moveUp();
-                    break;
-                case ROTATE_KEY:
+                case LEFT_KEY -> gameScreen.moveRight();
+                case RIGHT_KEY -> gameScreen.moveLeft();
+                case DOWN_KEY, DROP_KEY -> gameScreen.moveUp();
+                case ROTATE_KEY -> {
                     clockwiseRotateDegree = (clockwiseRotateDegree - 1) % 4;
                     Tetrimino currentTetrimino = currentBlock.getTetrimino();
                     Matrix rotateTetrimino = BLOCK.getBlockByTypeAndRotateNumber(currentTetrimino, clockwiseRotateDegree);
                     currentBlock = new TetrisBlock(currentTetrimino, rotateTetrimino);
-                    break;
+                }
             }
             currentBlockOnScreen = gameScreen.getScreenAfterAddCurrentBlock(currentBlock.getBlockMatrix());
         }
