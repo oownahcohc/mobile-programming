@@ -83,22 +83,22 @@ class TetrisGame {
 
     public void manipulateBlockOnScreenByKey(char key) throws MatrixException {
         switch (key) {
-            case LEFT_KEY: // moveLeft
+            case LEFT_KEY:
                 gameScreen.moveLeft();
                 break;
-            case RIGHT_KEY: // moveRight
+            case RIGHT_KEY:
                 gameScreen.moveRight();
                 break;
-            case DOWN_KEY: // moveDown
+            case DOWN_KEY:
                 gameScreen.moveDown();
                 break;
-            case ROTATE_KEY: // rotate
+            case ROTATE_KEY:
                 clockwiseRotateDegree = (clockwiseRotateDegree + 1) % 4;
                 Tetrimino currentTetrimino = currentBlock.getTetrimino();
                 Matrix rotateTetrimino = BLOCK.getBlockByTypeAndRotateNumber(currentTetrimino, clockwiseRotateDegree);
                 currentBlock = new TetrisBlock(currentTetrimino, rotateTetrimino);
                 break;
-            case DROP_KEY: // dropDown
+            case DROP_KEY:
                 currentBlockOnScreen = gameScreen.dropDown(currentBlockOnScreen.getMatrix(), currentBlock.getBlockMatrix());
                 break;
         }
@@ -110,19 +110,19 @@ class TetrisGame {
             switch (key) {
                 case LEFT_KEY:
                     gameScreen.moveRight();
-                    break; // undo: move right
+                    break;
                 case RIGHT_KEY:
                     gameScreen.moveLeft();
-                    break; // undo: move left
+                    break;
                 case DOWN_KEY, DROP_KEY:
                     gameScreen.moveUp();
-                    break; // undo: move up
+                    break;
                 case ROTATE_KEY:
                     clockwiseRotateDegree = (clockwiseRotateDegree - 1) % 4;
                     Tetrimino currentTetrimino = currentBlock.getTetrimino();
                     Matrix rotateTetrimino = BLOCK.getBlockByTypeAndRotateNumber(currentTetrimino, clockwiseRotateDegree);
                     currentBlock = new TetrisBlock(currentTetrimino, rotateTetrimino);
-                    break; // undo: rotate the block counter-clockwise
+                    break;
             }
             currentBlockOnScreen = gameScreen.getScreenAfterAddCurrentBlock(currentBlock.getBlockMatrix());
         }
@@ -181,7 +181,7 @@ class Screen {
 
     private static final int SCREEN_HEIGHT = 15;
     private static final int SCREEN_WIDTH = 10;
-    private static final int SCREEN_BORDER_WIDTH = 4; // large enough to cover the largest block
+    private static final int SCREEN_BORDER_WIDTH = 4;
     private static final int SCREEN_TOP = 0;
     private static final int SCREEN_CENTER = SCREEN_BORDER_WIDTH + SCREEN_WIDTH / 2 - 2;
 
@@ -190,7 +190,7 @@ class Screen {
     private int left = SCREEN_CENTER;
     private boolean isNewBlockNeed = false;
 
-    public Screen(Matrix matrix) {
+    private Screen(Matrix matrix) {
         this.matrix = matrix;
     }
 
@@ -265,20 +265,20 @@ class Screen {
     }
 
     public void fullLineDelete() throws MatrixException {
-        int playAreaTop = 0; // 플레이 영역의 상단 경계
+        int playAreaTop = SCREEN_TOP; // 플레이 영역의 상단 경계
         int playAreaBottom = matrix.get_dy() - SCREEN_BORDER_WIDTH; // 플레이 영역의 하단 경계
 
         for (int y = playAreaTop; y < playAreaBottom; y++) {
             Matrix line = matrix.clip(y, SCREEN_BORDER_WIDTH, y + 1, matrix.get_dx() - SCREEN_BORDER_WIDTH);
-            if (line.sum() == line.get_dx()) { // Check if the line is full
-                if (y > playAreaTop) { // If it's not the topmost line
-                    Matrix above = matrix.clip(playAreaTop, SCREEN_BORDER_WIDTH, y, matrix.get_dx() - SCREEN_BORDER_WIDTH); // Get the part above the line
-                    matrix.paste(above, playAreaTop + 1, SCREEN_BORDER_WIDTH); // Paste it one line below
+            if (line.sum() == line.get_dx()) { // 한 줄이 다 찼는지
+                if (y > playAreaTop) {
+                    Matrix above = matrix.clip(playAreaTop, SCREEN_BORDER_WIDTH, y, matrix.get_dx() - SCREEN_BORDER_WIDTH);
+                    matrix.paste(above, playAreaTop + 1, SCREEN_BORDER_WIDTH);
                 }
-                // Clear the topmost line of the play area
                 Matrix clear = new Matrix(1, line.get_dx());
-                for(int x = 0; x < clear.get_dx(); x++)
+                for(int x = 0; x < clear.get_dx(); x++) {
                     clear.get_array()[0][x] = 0;
+                }
                 matrix.paste(clear, playAreaTop, SCREEN_BORDER_WIDTH);
             }
         }
