@@ -138,6 +138,7 @@ public class Main {
 
             if (newBlockNeeded) {
                 iScreen = new Matrix(oScreen);
+                fullLineDelete(iScreen);
                 top = 0;
                 left = iScreenDw + iScreenDx / 2 - 2;
                 newBlockNeeded = false;
@@ -151,6 +152,26 @@ public class Main {
                 oScreen = new Matrix(iScreen);
                 oScreen.paste(tempBlk, top, left);
                 drawMatrix(oScreen);
+            }
+        }
+    }
+
+    private static void fullLineDelete(Matrix iScreen) throws MatrixException {
+        int playAreaTop = 0; // 플레이 영역의 상단 경계
+        int playAreaBottom = iScreen.get_dy() - iScreenDw; // 플레이 영역의 하단 경계
+
+        for (int y = playAreaTop; y < playAreaBottom; y++) {
+            Matrix line = iScreen.clip(y, iScreenDw, y + 1, iScreen.get_dx() - iScreenDw);
+            if (line.sum() == line.get_dx()) { // Check if the line is full
+                if (y > playAreaTop) { // If it's not the topmost line
+                    Matrix above = iScreen.clip(playAreaTop, iScreenDw, y, iScreen.get_dx() - iScreenDw); // Get the part above the line
+                    iScreen.paste(above, playAreaTop + 1, iScreenDw); // Paste it one line below
+                }
+                // Clear the topmost line of the play area
+                Matrix clear = new Matrix(1, line.get_dx());
+                for(int x = 0; x < clear.get_dx(); x++)
+                    clear.get_array()[0][x] = 0;
+                iScreen.paste(clear, playAreaTop, iScreenDw);
             }
         }
     }
