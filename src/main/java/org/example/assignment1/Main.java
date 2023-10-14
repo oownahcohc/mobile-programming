@@ -29,7 +29,6 @@ class TetrisController {
 
     public void run() throws MatrixException {
         TetrisGame tetrisGame = new TetrisGame(new TetrisRandomNumberGenerator());
-        tetrisGame.init();
         output.drawMatrix(tetrisGame.getDisplayMatrix());
 
         char key;
@@ -68,17 +67,18 @@ class TetrisGame {
     private int clockwiseRotateDegree = 0;
     private boolean isOver = false;
 
-    public TetrisGame(RandomNumberGenerator randomNumberGenerator) {
+    public TetrisGame(RandomNumberGenerator randomNumberGenerator) throws MatrixException {
         this.randomNumberGenerator = randomNumberGenerator;
+        this.init();
     }
 
-    public void init() throws MatrixException {
-        gameScreen = Screen.createGameScreen();
+    private void init() throws MatrixException {
+        this.gameScreen = Screen.createGameScreen();
         Tetrimino randomTetrimino = getByRandom(randomNumberGenerator.generate());
-        currentBlock = new TetrisBlock(randomTetrimino, BLOCK.getDefaultBlockByType(randomTetrimino));
-        currentBlockOnScreen = gameScreen.getScreenAfterAddCurrentBlock(currentBlock.getBlockMatrix());
-        display = gameScreen.copy();
-        display.pasteCurrentBlockOnGameScreen(currentBlockOnScreen.getMatrix(), gameScreen.getTop(), gameScreen.getLeft());
+        this.currentBlock = new TetrisBlock(randomTetrimino, BLOCK.getDefaultBlockByType(randomTetrimino));
+        this.currentBlockOnScreen = gameScreen.getScreenAfterAddCurrentBlock(currentBlock.getBlockMatrix());
+        this.display = gameScreen.copy();
+        this.display.pasteCurrentBlockOnGameScreen(currentBlockOnScreen.getMatrix(), gameScreen.getTop(), gameScreen.getLeft());
     }
 
     public void manipulateBlockOnScreenByKey(char key) throws MatrixException {
